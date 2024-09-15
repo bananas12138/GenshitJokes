@@ -1,0 +1,37 @@
+name: Package Mihoyo Jokes Folder
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'readme_img/**'
+      - 'genshitjokes/**'
+      - 'chicken3rdjokes/**'
+      - 'starrailjokes/**'
+      - 'zzzjokes/**'
+      - 'civalwar/**'
+      - 'README.md'
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup ZIP
+        run: sudo apt-get install zip
+
+      - name: Zip the genshitjokes folder and README.md with date
+        run: |
+          DATE=$(date +'%Y.%m.%d')
+          echo "DATE=$DATE" >> $GITHUB_ENV
+          zip -r "MihoyoJokes_$DATE.zip" readme_img/ genshitjokes/ chicken3rdjokes/ starrailjokes/ zzzjokes/ civalwar/ README.md
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MihoyoJokes-archive-${{ env.DATE }}
+          path: "MihoyoJokes_${{ env.DATE }}.zip"
